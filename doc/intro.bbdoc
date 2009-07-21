@@ -1,0 +1,9 @@
+<h1>Rackspace CloudFiles</h1>
+<p>This module allows you to interact with your account for Rackspace Cloud Files. Cloud Files is a webservice that allows you to store content online in the cloud.</p>
+
+
+<h2>Examples</h2>
+<p>Please take a look at one of the examples below.</p>
+<ul>
+	<li><a href="../examples/example1.bmx">example1.bmx</a></li>
+</ul>
