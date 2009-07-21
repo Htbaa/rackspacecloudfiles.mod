@@ -1,4 +1,4 @@
-This module allows you to interact with your account for Mosso Cloud Files.
+This module allows you to interact with your account for Rackspacecloud Files.
 This module requires the following external modules:
 
 	* bah.libcurlssl
