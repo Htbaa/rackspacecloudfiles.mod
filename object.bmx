@@ -21,7 +21,12 @@ Type TRackspaceCloudFileObject
 		Self._name = name
 		Self._rackspace = container._rackspace
 		Self._container = container
-		Self._url = container._rackspace._storageUrl + "/" + container.Name() + "/" + name
+		
+		Local urlDirname:String = ExtractDir(Self._name)
+		Local urlFilename:String = EncodeString(StripDir(Self._name), False, False)
+		If urlDirname.Length > 0 Then urlDirname:+"/"
+		
+		Self._url = container._rackspace._storageUrl + "/" + container.Name() + "/" + urlDirname + urlFilename
 		Return Self
 	End Method
 

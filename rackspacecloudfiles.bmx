@@ -5,8 +5,9 @@ Rem
 EndRem
 Module htbaapub.rackspacecloudfiles
 ModuleInfo "Name: htbaapub.rackspacecloudfiles"
-ModuleInfo "Version: 1.00"
+ModuleInfo "Version: 1.01"
 ModuleInfo "Author: Christiaan Kras"
+ModuleInfo "Special thanks to: Kris Kelly"
 ModuleInfo "Git repository: <a href='http://github.com/Htbaa/htbaapub.mod/'>http://github.com/Htbaa/htbaapub.mod/</a>"
 ModuleInfo "Rackspace Cloud Files: <a href='http://www.rackspacecloud.com'>http://www.rackspacecloud.com</a>"
 
@@ -14,6 +15,7 @@ Import bah.crypto
 Import bah.libcurlssl
 Import brl.linkedlist
 Import brl.map
+Import brl.retro
 Import brl.standardio
 Import brl.stream
 Import brl.system
@@ -269,3 +271,63 @@ Type TRackspaceCloudFiles
 		Return Null
 	End Function
 End Type
+
+'Code below taken from the public domain
+'http://www.blitzmax.com/codearcs/codearcs.php?code=1581
+'Original author is Perturbatio/Kris Kelly
+
+Function EncodeString:String(value:String, EncodeUnreserved:Int = False, UsePlusForSpace:Int = True)
+	Local ReservedChars:String = "!*'();:@&=+$,/?%#[]~r~n"
+	Local s:Int
+	Local result:String
+
+	For s = 0 To value.length - 1
+		If ReservedChars.Find(value[s..s + 1]) > -1 Then
+			result:+ "%"+ IntToHexString(Asc(value[s..s + 1]))
+			Continue
+		ElseIf value[s..s+1] = " " Then
+			If UsePlusForSpace Then result:+"+" Else result:+"%20"
+			Continue
+		ElseIf EncodeUnreserved Then
+				result:+ "%" + IntToHexString(Asc(value[s..s + 1]))
+			Continue
+		EndIf
+		result:+ value[s..s + 1]
+	Next
+
+	Return result
+End Function
+
+Function DecodeString:String(EncStr:String)
+	Local Pos:Int = 0
+	Local HexVal:String
+	Local Result:String
+
+	While Pos<Len(EncStr)
+		If EncStr[Pos..Pos+1] = "%" Then
+			HexVal = EncStr[Pos+1..Pos+3]
+			Result:+Chr(HexToInt(HexVal))
+			Pos:+3
+		ElseIf EncStr[Pos..Pos+1] = "+" Then
+			Result:+" "
+			Pos:+1
+		Else
+			Result:+EncStr[Pos..Pos + 1]
+			Pos:+1	
+		EndIf
+	Wend
+	
+	Return Result
+End Function
+
+
+Function HexToInt:Int( HexStr:String )
+	If HexStr.Find("$") <> 0 Then HexStr = "$" + HexStr
+	Return Int(HexStr)
+End Function
+
+
+Function IntToHexString:String(val:Int, chars:Int = 2)
+	Local Result:String = Hex(val)
+	Return result[result.length-chars..]
+End Function
