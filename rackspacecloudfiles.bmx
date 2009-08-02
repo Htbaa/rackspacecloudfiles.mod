@@ -93,7 +93,7 @@ Type TRackspaceCloudFiles
 		about: Set prefix if you want to filter out the containers not beginning with the prefix
 	End Rem
 	Method Containers:TList(prefix:String = Null, limit:Int = 10000, marker:String = Null)
-		Local qs:String = TRackspaceCloudFiles.CreateQueryString(["limit=" + limit, "prefix=" + prefix, "marker=" + marker])
+		Local qs:String = TRackspaceCloudFiles.CreateQueryString(["limit=" + limit, "prefix=" + EncodeString(prefix, False, True), "marker=" + EncodeString(marker, False, True)])
 		Select Self._Transport(Self._storageUrl + qs)
 			Case 200
 				Local containerList:TList = New TList
