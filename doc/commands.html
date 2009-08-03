@@ -188,6 +188,9 @@ Creates a TRackspaceCloudFiles object.
 <tr><td class=docleft width=1%><a href=#CreateContainer>CreateContainer</a></td><td class=docright>
 Create a new container.
 </td></tr>
+<tr><td class=docleft width=1%><a href=#SetProgressCallback>SetProgressCallback</a></td><td class=docright>
+Set a progress callback function to use when uploading or downloading data.
+</td></tr>
 <tr><td class=docleft width=1%><a href=#TotalBytesUsed>TotalBytesUsed</a></td><td class=docright>
 Returns the total amount of bytes used in your Cloud Files account.
 </td></tr>
@@ -227,6 +230,11 @@ This needs to be set BEFORE creating a TRackspaceCloudFiles object, as TRackspac
 <table class=doc width=100% cellspacing=3 id=CreateContainer>
 <tr><td class=doctop colspan=2>Method CreateContainer:TRackspaceCloudFilesContainer(name:String)</td></tr>
 <tr><td class=docleft width=1%>Description</td><td class=docright>Create a new container.</td></tr>
+</table>
+<table class=doc width=100% cellspacing=3 id=SetProgressCallback>
+<tr><td class=doctop colspan=2>Method SetProgressCallback(progressFunction:Int(data:Object, dltotal:Double, dlnow:Double, ultotal:Double, ulnow:Double), progressObject:Object = Null)</td></tr>
+<tr><td class=docleft width=1%>Description</td><td class=docright>Set a progress callback function to use when uploading or downloading data.</td></tr>
+<tr><td class=docleft width=1%>Information</td><td class=docright>This is passed to cURL with setProgressCallback(). See bah.libcurlssl for more information.</td></tr>
 </table>
 <table class=doc width=100% cellspacing=3 id=TotalBytesUsed>
 <tr><td class=doctop colspan=2>Method TotalBytesUsed:Long()</td></tr>
@@ -305,7 +313,7 @@ Deletes the container, which should be empty.
 <h2 id=modinfo>Module Information</h2>
 <table width=100%>
 <tr><th width=1%>Name</th><td>htbaapub.rackspacecloudfiles</td></tr>
-<tr><th width=1%>Version</th><td>1.02</td></tr>
+<tr><th width=1%>Version</th><td>1.03</td></tr>
 <tr><th width=1%>Author</th><td>Christiaan Kras</td></tr>
 <tr><th width=1%>Special thanks to</th><td>Bruce A Henderson, Kris Kelly</td></tr>
 <tr><th width=1%>Git repository</th><td><a href='http://github.com/Htbaa/htbaapub.mod/'>http://github.com/Htbaa/htbaapub.mod/</a></td></tr>
