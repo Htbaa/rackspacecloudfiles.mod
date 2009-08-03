@@ -42,6 +42,9 @@ Type TRackspaceCloudFiles
 	
 	Field _headers:TMap
 	Field _content:String
+	
+	Field _progressCallback:Int(data:Object, dltotal:Double, dlnow:Double, ultotal:Double, ulnow:Double)
+	Field _progressData:Object
 
 	Rem
 		bbdoc: Optionally set the path to a certification bundle to validate the SSL certificate of Rackspace
@@ -161,19 +164,34 @@ Type TRackspaceCloudFiles
 		Return 0
 	End Method
 	
+	Rem
+		bbdoc: Set a progress callback function to use when uploading or downloading data
+		about: This is passed to cURL with setProgressCallback(). See bah.libcurlssl for more information
+	End Rem
+	Method SetProgressCallback(progressFunction:Int(data:Object, dltotal:Double, dlnow:Double, ultotal:Double, ulnow:Double), progressObject:Object = Null)
+		Self._progressCallback = progressFunction
+		Self._progressData = progressObject
+	End Method
+	
 '	Rem
 '		bbdoc: Private method
 '		about: Used to send requests. Sets header data and content data. Returns HTTP status code
 '	End Rem
 	Method _Transport:Int(url:String, headers:String[] = Null, requestMethod:String = "GET", userData:Object = Null)
 		Self._headers.Clear()
-		
+
 		Local curl:TCurlEasy = TCurlEasy.Create()
 		curl.setWriteString()
 		curl.setOptInt(CURLOPT_VERBOSE, 0)
 		curl.setOptInt(CURLOPT_FOLLOWLOCATION, 1)
 		curl.setOptString(CURLOPT_CUSTOMREQUEST, requestMethod)
 		curl.setOptString(CURLOPT_URL, url)
+		
+', 		
+		'Set progress callback if set
+		If Self._progressCallback <> Null
+			curl.setProgressCallback(Self._progressCallback, Self._progressData)
+		End If
 		
 		'Use certificate bundle if set
 		If TRackspaceCloudFiles.CAInfo
