@@ -22,11 +22,15 @@ Type TRackspaceCloudFileObject
 		Self._rackspace = container._rackspace
 		Self._container = container
 		
-		Local urlDirname:String = ExtractDir(Self._name)
-		Local urlFilename:String = EncodeString(StripDir(Self._name), False, False)
-		If urlDirname.Length > 0 Then urlDirname:+"/"
+		Self._url = container._rackspace._storageUrl + "/" + container.Name() + "/"
+		Local parts:String[] = ExtractDir(Self._name).Split("/")
+		For Local part:String = EachIn parts
+			If part.Length = 0 Then Continue
+			Self._url:+EncodeString(part, False, False) + "/"
+		Next
 		
-		Self._url = container._rackspace._storageUrl + "/" + container.Name() + "/" + urlDirname + urlFilename
+		Self._url:+EncodeString(StripDir(Self._name), False, False)
+
 		Return Self
 	End Method
 
