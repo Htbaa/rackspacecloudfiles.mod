@@ -2,7 +2,7 @@ This module allows you to interact with your account for Rackspacecloud Files.
 This module requires the following external modules:
 
 	* bah.libcurlssl
-	* bah.crypto
+	* bah.crypto (>=1.02)
 
 	(Both BaH modules can be found at http://code.google.com/p/maxmods/)
 

@@ -102,7 +102,8 @@ Type TRackspaceCloudFileObject
 	End Rem
 	Method PutFile(filename:String)
 		Local stream:TStream = ReadStream(filename)
-		Local md5Hex:String = MD5(LoadText(filename))
+		Local md5Hex:String = MD5(stream)
+		stream.Seek(0)
 		Local headers:String[] = ["ETag: " + md5Hex.ToLower(), "Content-Type: " + TRackspaceCloudFileObject.ContentTypeOf(filename) ]
 
 		Select Self._rackspace._Transport(Self._url, headers, "PUT", stream)
