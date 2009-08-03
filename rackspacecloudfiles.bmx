@@ -5,7 +5,7 @@ Rem
 EndRem
 Module htbaapub.rackspacecloudfiles
 ModuleInfo "Name: htbaapub.rackspacecloudfiles"
-ModuleInfo "Version: 1.03"
+ModuleInfo "Version: 1.04"
 ModuleInfo "Author: Christiaan Kras"
 ModuleInfo "Special thanks to: Bruce A Henderson, Kris Kelly"
 ModuleInfo "Git repository: <a href='http://github.com/Htbaa/htbaapub.mod/'>http://github.com/Htbaa/htbaapub.mod/</a>"
