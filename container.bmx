@@ -59,7 +59,7 @@ Type TRackspaceCloudFilesContainer
 		about: Set prefix to retrieve only the objects beginning with that name
 	End Rem
 	Method Objects:TList(prefix:String = Null, limit:Int = 10000, marker:String = Null)
-		Local qs:String = TRackspaceCloudFiles.CreateQueryString(["limit=" + limit, "prefix=" + EncodeString(prefix, False, True), "marker=" + EncodeString(marker, False, True)])
+		Local qs:String = TRackspaceCloudFiles.CreateQueryString(["limit=" + limit, "prefix=" + TURLFunc.EncodeString(prefix, False, True), "marker=" + TURLFunc.EncodeString(marker, False, True)])
 		Select Self._rackspace._Transport(Self._url + qs, Null, "GET")
 			Case 200
 				Local objectsList:TList = New TList

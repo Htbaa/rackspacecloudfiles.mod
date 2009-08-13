@@ -96,7 +96,7 @@ Type TRackspaceCloudFiles
 		about: Set prefix if you want to filter out the containers not beginning with the prefix
 	End Rem
 	Method Containers:TList(prefix:String = Null, limit:Int = 10000, marker:String = Null)
-		Local qs:String = TRackspaceCloudFiles.CreateQueryString(["limit=" + limit, "prefix=" + EncodeString(prefix, False, True), "marker=" + EncodeString(marker, False, True)])
+		Local qs:String = TRackspaceCloudFiles.CreateQueryString(["limit=" + limit, "prefix=" + TURLFunc.EncodeString(prefix, False, True), "marker=" + TURLFunc.EncodeString(marker, False, True)])
 		Select Self._Transport(Self._storageUrl + qs)
 			Case 200
 				Local containerList:TList = New TList
@@ -293,59 +293,59 @@ End Type
 'Code below taken from the public domain
 'http://www.blitzmax.com/codearcs/codearcs.php?code=1581
 'Original author is Perturbatio/Kris Kelly
-
-Function EncodeString:String(value:String, EncodeUnreserved:Int = False, UsePlusForSpace:Int = True)
-	Local ReservedChars:String = "!*'();:@&=+$,/?%#[]~r~n"
-	Local s:Int
-	Local result:String
-
-	For s = 0 To value.length - 1
-		If ReservedChars.Find(value[s..s + 1]) > -1 Then
-			result:+ "%"+ IntToHexString(Asc(value[s..s + 1]))
-			Continue
-		ElseIf value[s..s+1] = " " Then
-			If UsePlusForSpace Then result:+"+" Else result:+"%20"
-			Continue
-		ElseIf EncodeUnreserved Then
-				result:+ "%" + IntToHexString(Asc(value[s..s + 1]))
-			Continue
-		EndIf
-		result:+ value[s..s + 1]
-	Next
-
-	Return result
-End Function
-
-Function DecodeString:String(EncStr:String)
-	Local Pos:Int = 0
-	Local HexVal:String
-	Local Result:String
-
-	While Pos<Len(EncStr)
-		If EncStr[Pos..Pos+1] = "%" Then
-			HexVal = EncStr[Pos+1..Pos+3]
-			Result:+Chr(HexToInt(HexVal))
-			Pos:+3
-		ElseIf EncStr[Pos..Pos+1] = "+" Then
-			Result:+" "
-			Pos:+1
-		Else
-			Result:+EncStr[Pos..Pos + 1]
-			Pos:+1	
-		EndIf
-	Wend
+'Wrapped by Htbaa/Christiaan Kras to fit in the module
+Type TURLFunc
+	Function EncodeString:String(value:String, EncodeUnreserved:Int = False, UsePlusForSpace:Int = True)
+		Local ReservedChars:String = "!*'();:@&=+$,/?%#[]~r~n"
+		Local s:Int
+		Local result:String
 	
-	Return Result
-End Function
-
-
-Function HexToInt:Int( HexStr:String )
-	If HexStr.Find("$") <> 0 Then HexStr = "$" + HexStr
-	Return Int(HexStr)
-End Function
-
-
-Function IntToHexString:String(val:Int, chars:Int = 2)
-	Local Result:String = Hex(val)
-	Return result[result.length-chars..]
-End Function
+		For s = 0 To value.length - 1
+			If ReservedChars.Find(value[s..s + 1]) > -1 Then
+				result:+ "%"+ TURLFunc.IntToHexString(Asc(value[s..s + 1]))
+				Continue
+			ElseIf value[s..s+1] = " " Then
+				If UsePlusForSpace Then result:+"+" Else result:+"%20"
+				Continue
+			ElseIf EncodeUnreserved Then
+					result:+ "%" + TURLFunc.IntToHexString(Asc(value[s..s + 1]))
+				Continue
+			EndIf
+			result:+ value[s..s + 1]
+		Next
+	
+		Return result
+	End Function
+	
+	Function DecodeString:String(EncStr:String)
+		Local Pos:Int = 0
+		Local HexVal:String
+		Local Result:String
+	
+		While Pos<Len(EncStr)
+			If EncStr[Pos..Pos+1] = "%" Then
+				HexVal = EncStr[Pos+1..Pos+3]
+				Result:+Chr(HexToInt(HexVal))
+				Pos:+3
+			ElseIf EncStr[Pos..Pos+1] = "+" Then
+				Result:+" "
+				Pos:+1
+			Else
+				Result:+EncStr[Pos..Pos + 1]
+				Pos:+1	
+			EndIf
+		Wend
+		
+		Return Result
+	End Function
+	
+	Function HexToInt:Int( HexStr:String )
+		If HexStr.Find("$") <> 0 Then HexStr = "$" + HexStr
+		Return Int(HexStr)
+	End Function
+	
+	Function IntToHexString:String(val:Int, chars:Int = 2)
+		Local Result:String = Hex(val)
+		Return result[result.length-chars..]
+	End Function
+End Type

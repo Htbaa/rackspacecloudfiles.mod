@@ -26,10 +26,10 @@ Type TRackspaceCloudFileObject
 		Local parts:String[] = ExtractDir(Self._name).Split("/")
 		For Local part:String = EachIn parts
 			If part.Length = 0 Then Continue
-			Self._url:+EncodeString(part, False, False) + "/"
+			Self._url:+TURLFunc.EncodeString(part, False, False) + "/"
 		Next
 		
-		Self._url:+EncodeString(StripDir(Self._name), False, False)
+		Self._url:+TURLFunc.EncodeString(StripDir(Self._name), False, False)
 
 		Return Self
 	End Method
