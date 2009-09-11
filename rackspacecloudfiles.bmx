@@ -8,7 +8,7 @@ ModuleInfo "Name: htbaapub.rackspacecloudfiles"
 ModuleInfo "Version: 1.04"
 ModuleInfo "Author: Christiaan Kras"
 ModuleInfo "Special thanks to: Bruce A Henderson, Kris Kelly"
-ModuleInfo "Git repository: <a href='http://github.com/Htbaa/htbaapub.mod/'>http://github.com/Htbaa/htbaapub.mod/</a>"
+ModuleInfo "Git repository: <a href='http://github.com/Htbaa/rackspacecloudfiles.mod/'>http://github.com/Htbaa/rackspacecloudfiles.mod/</a>"
 ModuleInfo "Rackspace Cloud Files: <a href='http://www.rackspacecloud.com'>http://www.rackspacecloud.com</a>"
 
 Import bah.crypto
