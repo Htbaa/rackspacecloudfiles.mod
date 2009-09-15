@@ -31,9 +31,10 @@ Type TRackspaceCloudFilesContainer
 		about:
 	End Rem
 	Method ObjectCount:Int()
-		Select Self._rackspace._Transport(Self._url, Null, "HEAD")
+		Local response:TRESTResponse = Self._rackspace._Transport(Self._url, Null, "HEAD")
+		Select response.responseCode
 			Case 204
-				Return String(Self._rackspace._headers.ValueForKey("X-Container-Object-Count")).ToInt()
+				Return response.GetHeader("X-Container-Object-Count").ToInt()
 			Default
 				Throw New TRackspaceCloudFilesContainerException.SetMessage("Unable to handle response")
 		End Select
@@ -45,9 +46,10 @@ Type TRackspaceCloudFilesContainer
 		about:
 	End Rem
 	Method BytesUsed:Long()
-		Select Self._rackspace._Transport(Self._url, Null, "HEAD")
+		Local response:TRESTResponse = Self._rackspace._Transport(Self._url, Null, "HEAD")
+		Select response.responseCode
 			Case 204
-				Return String(Self._rackspace._headers.ValueForKey("X-Container-Bytes-Used")).ToInt()
+				Return response.GetHeader("X-Container-Bytes-Used").ToInt()
 			Default
 				Throw New TRackspaceCloudFilesContainerException.SetMessage("Unable to handle response")
 		End Select
@@ -59,15 +61,16 @@ Type TRackspaceCloudFilesContainer
 		about: Set prefix to retrieve only the objects beginning with that name
 	End Rem
 	Method Objects:TList(prefix:String = Null, limit:Int = 10000, marker:String = Null)
-		Local qs:String = TRackspaceCloudFiles.CreateQueryString(["limit=" + limit, "prefix=" + TURLFunc.EncodeString(prefix, False, True), "marker=" + TURLFunc.EncodeString(marker, False, True)])
-		Select Self._rackspace._Transport(Self._url + qs, Null, "GET")
+		Local qs:String = TURLFunc.CreateQueryString(["limit=" + limit, "prefix=" + TURLFunc.EncodeString(prefix, False, True), "marker=" + TURLFunc.EncodeString(marker, False, True)])
+		Local response:TRESTResponse = Self._rackspace._Transport(Self._url + qs, Null, "GET")
+		Select response.responseCode
 			Case 200
 				Local objectsList:TList = New TList
-				If Self._rackspace._content.Length = 0
+				If response.content.Length = 0
 					Return objectsList
 				End If
 				
-				Local objects:String[] = Self._rackspace._content.Trim().Split("~n")
+				Local objects:String[] = response.content.Trim().Split("~n")
 				For Local objectName:String = EachIn objects
 					If objectName.Length = 0 Then Continue
 					objectsList.AddLast(Self.FileObject(objectName))
@@ -106,7 +109,8 @@ Type TRackspaceCloudFilesContainer
 		about:
 	End Rem
 	Method Remove()
-		Select Self._rackspace._Transport(Self._url, Null, "DELETE")
+		Local response:TRESTResponse = Self._rackspace._Transport(Self._url, Null, "DELETE")
+		Select response.responseCode
 			Case 204
 				'OK
 			Case 409

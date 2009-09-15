@@ -47,11 +47,12 @@ Type TRackspaceCloudFileObject
 		about:
 	End Rem
 	Method Head()
-		Select Self._rackspace._Transport(Self._url, Null, "HEAD")
+		Local response:TRESTResponse = Self._rackspace._Transport(Self._url, Null, "HEAD")
+		Select response.responseCode
 			Case 404
 				Throw New TRackspaceCloudFileObjectException.SetMessage("Object " + Self._name + " not found")
 			Case 204
-				Self._SetAttributesFromResponse()
+				Self._SetAttributesFromResponse(response)
 			Default
 				Throw New TRackspaceCloudFileObjectException.SetMessage("Unable to handle response")
 		End Select
@@ -62,15 +63,16 @@ Type TRackspaceCloudFileObject
 		about: Returns data content
 	End Rem
 	Method Get:String()
-		Select Self._rackspace._Transport(Self._url, Null)
+		Local response:TRESTResponse = Self._rackspace._Transport(Self._url, Null)
+		Select response.responseCode
 			Case 404
 				Throw New TRackspaceCloudFileObjectException.SetMessage("Object " + Self._name + " not found")
 			Case 200
-				Self._SetAttributesFromResponse()
-				If Self._etag <> MD5(Self._rackspace._content).ToLower()
+				Self._SetAttributesFromResponse(response)
+				If Self._etag <> MD5(response.content).ToLower()
 					Throw New TRackspaceCloudFileObjectException.SetMessage("Data corruption error")
 				End If
-				Return Self._rackspace._content
+				Return response.content
 			Default
 				Throw New TRackspaceCloudFileObjectException.SetMessage("Unable to handle response")
 		End Select
@@ -90,7 +92,8 @@ Type TRackspaceCloudFileObject
 		about:
 	End Rem
 	Method Remove()
-		Select Self._rackspace._Transport(Self._url, Null, "DELETE")
+		Local response:TRESTResponse = Self._rackspace._Transport(Self._url, Null, "DELETE")
+		Select response.responseCode
 			Case 404
 				Throw New TRackspaceCloudFileObjectException.SetMessage("Object " + Self._name + " not found")
 			Case 204
@@ -110,10 +113,11 @@ Type TRackspaceCloudFileObject
 		stream.Seek(0)
 		Local headers:String[] = ["ETag: " + md5Hex.ToLower(), "Content-Type: " + TRackspaceCloudFileObject.ContentTypeOf(filename) ]
 
-		Select Self._rackspace._Transport(Self._url, headers, "PUT", stream)
+		Local response:TRESTResponse = Self._rackspace._Transport(Self._url, headers, "PUT", stream)
+		Select response.responseCode
 			Case 201
 				'Object created
-				Self._SetAttributesFromResponse()
+				Self._SetAttributesFromResponse(response)
 			Case 412
 				Throw New TRackspaceCloudFileObjectException.SetMessage("Missing Content-Length or Content-Type header")
 			Case 422
@@ -190,10 +194,10 @@ Type TRackspaceCloudFileObject
 '	Rem
 '		bbdoc: Private method
 '	End Rem
-	Method _SetAttributesFromResponse()
-		Self._etag = String(Self._rackspace._headers.ValueForKey("Etag"))
-		Self._size = String(Self._rackspace._headers.ValueForKey("Content-Length")).ToLong()
-		Self._contentType = String(Self._rackspace._headers.ValueForKey("Content-Type"))
-		Self._lastModified = String(Self._rackspace._headers.ValueForKey("Last-Modified"))
+	Method _SetAttributesFromResponse(response:TRESTResponse)
+		Self._etag = response.GetHeader("Etag")
+		Self._size = response.GetHeader("Content-Length").ToLong()
+		Self._contentType = response.GetHeader("Content-Type")
+		Self._lastModified = response.GetHeader("Last-Modified")
 	End Method
 End Type

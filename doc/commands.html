@@ -195,14 +195,6 @@ Set a progress callback function to use when uploading or downloading data.
 Returns the total amount of bytes used in your Cloud Files account.
 </td></tr>
 </table>
-<table class=doc width=90% align=center><tr ><th class=doctop colspan=2 align=left><a name=TRackspaceCloudFiles_functions></a>Functions Summary</th></tr>
-<tr><td class=docleft width=1%><a href=#CreateQueryString>CreateQueryString</a></td><td class=docright>
-Create a query string from the given values.
-</td></tr>
-<tr><td class=docleft width=1%><a href=#HeaderCallback>HeaderCallback</a></td><td class=docright>
-Callback for cURL to catch headers.
-</td></tr>
-</table>
 <table class=doc width=100% cellspacing=3 id=CAInfo>
 <tr><td class=doctop colspan=2>Global CAInfo:String</td></tr>
 <tr><td class=docleft width=1%>Description</td><td class=docright>Optionally set the path to a certification bundle to validate the SSL certificate of Rackspace.</td></tr>
@@ -239,15 +231,6 @@ This needs to be set BEFORE creating a TRackspaceCloudFiles object, as TRackspac
 <table class=doc width=100% cellspacing=3 id=TotalBytesUsed>
 <tr><td class=doctop colspan=2>Method TotalBytesUsed:Long()</td></tr>
 <tr><td class=docleft width=1%>Description</td><td class=docright>Returns the total amount of bytes used in your Cloud Files account.</td></tr>
-</table>
-<table class=doc width=100% cellspacing=3 id=CreateQueryString>
-<tr><td class=doctop colspan=2>Function CreateQueryString:String(params:String[])</td></tr>
-<tr><td class=docleft width=1%>Description</td><td class=docright>Create a query string from the given values.</td></tr>
-<tr><td class=docleft width=1%>Information</td><td class=docright>Expects an array with strings. Each entry should be something like var=value.</td></tr>
-</table>
-<table class=doc width=100% cellspacing=3 id=HeaderCallback>
-<tr><td class=doctop colspan=2>Function HeaderCallback:Int(buffer:Byte Ptr, size:Int, data:Object)</td></tr>
-<tr><td class=docleft width=1%>Description</td><td class=docright>Callback for cURL to catch headers.</td></tr>
 </table>
 <br>
 <table class=doc width=100% cellspacing=3 id=TRackspaceCloudFilesContainer>
@@ -313,9 +296,8 @@ Deletes the container, which should be empty.
 <h2 id=modinfo>Module Information</h2>
 <table width=100%>
 <tr><th width=1%>Name</th><td>htbaapub.rackspacecloudfiles</td></tr>
-<tr><th width=1%>Version</th><td>1.04</td></tr>
+<tr><th width=1%>Version</th><td>1.05</td></tr>
 <tr><th width=1%>Author</th><td>Christiaan Kras</td></tr>
-<tr><th width=1%>Special thanks to</th><td>Bruce A Henderson, Kris Kelly</td></tr>
 <tr><th width=1%>Git repository</th><td><a href='http://github.com/Htbaa/rackspacecloudfiles.mod/'>http://github.com/Htbaa/rackspacecloudfiles.mod/</a></td></tr>
 <tr><th width=1%>Rackspace Cloud Files</th><td><a href='http://www.rackspacecloud.com'>http://www.rackspacecloud.com</a></td></tr>
 </body></html>
