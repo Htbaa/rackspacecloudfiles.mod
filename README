@@ -4,6 +4,6 @@ This module requires the following external modules:
 	* htbaapub.rest (>=1.00)
 	* bah.crypto (>=1.02)
 
-	(Both BaH modules can be found at http://code.google.com/p/maxmods/)
+	(BaH modules can be found at http://code.google.com/p/maxmods/)
 
 Collaborators are more then wanted to help with the Mac OSX and Linux version of the module.
