@@ -5,7 +5,7 @@ Rem
 EndRem
 Module htbaapub.rackspacecloudfiles
 ModuleInfo "Name: htbaapub.rackspacecloudfiles"
-ModuleInfo "Version: 1.05"
+ModuleInfo "Version: 1.06"
 ModuleInfo "Author: Christiaan Kras"
 ModuleInfo "Git repository: <a href='http://github.com/Htbaa/rackspacecloudfiles.mod/'>http://github.com/Htbaa/rackspacecloudfiles.mod/</a>"
 ModuleInfo "Rackspace Cloud Files: <a href='http://www.rackspacecloud.com'>http://www.rackspacecloud.com</a>"
