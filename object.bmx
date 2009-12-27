@@ -113,9 +113,24 @@ Type TRackspaceCloudFileObject
 		Local stream:TStream = ReadStream(filename)
 		Local md5Hex:String = MD5(stream)
 		stream.Seek(0)
-		Local headers:String[] = ["ETag: " + md5Hex.ToLower(), "Content-Type: " + TRackspaceCloudFileObject.ContentTypeOf(filename) ]
+		
+		Local headerList:TList = New TList
+		headerList.AddLast("ETag: " + md5Hex.ToLower())
+		headerList.AddLast("Content-Type: " + TRackspaceCloudFileObject.ContentTypeOf(filename))
 
-		Local response:TRESTResponse = Self._rackspace._Transport(Self._url, headers, "PUT", stream)
+		If Self._metaData
+			For Local key:String = EachIn Self._metaData.Keys()
+				Local content:String = TURLFunc.EncodeString(String(Self._metaData.ValueForKey(key)))
+				headerList.AddLast("X-Object-Meta-" + key + ": " + content)
+			Next
+		End If
+		
+		Local headerArray:String[] = New String[headerList.Count()]
+		For Local i:Int = 0 To headerArray.Length - 1
+			headerArray[i] = String(headerList.ValueAtIndex(i))
+		Next
+		
+		Local response:TRESTResponse = Self._rackspace._Transport(Self._url, headerArray, "PUT", stream)
 		Select response.responseCode
 			Case 201
 				'Object created
