@@ -276,6 +276,7 @@ Type TRackspaceCloudFileObject
 		Self._contentType = response.GetHeader("Content-Type")
 		Self._lastModified = response.GetHeader("Last-Modified")
 		
+		Self.ClearMetaData()
 		For Local key:String = EachIn response.headers.Keys()
 			If key.Contains("X-Object-Meta-")
 				Local strippedKey:String = key[14..].Trim()
