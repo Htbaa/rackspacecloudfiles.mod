@@ -13,6 +13,8 @@ Type TRackspaceCloudFileObject
 	Field _container:TRackspaceCloudFilesContainer
 	Field _url:String
 	
+	Field _metaData:TMap
+	
 '	Rem
 '		bbdoc:
 '		about:
@@ -128,6 +130,18 @@ Type TRackspaceCloudFileObject
 	End Method
 
 	Rem
+		bbdoc: Set meta data for an object
+		about: Remember that the key and value together shouldn't exceed 4096 bytes
+	End Rem
+	Method SetMetaData(key:String, value:String)
+		If Not Self._metaData Then Self._metaData = New TMap
+		If key.Length + value.Length > 4096
+			Throw New TRackspaceCloudFileObjectException.SetMessage("Length of metadata's key and value should not exceed 4096 bytes")
+		End If
+		Self._metaData.Insert(key, value)
+	End Method
+	
+	Rem
 		bbdoc: Return content-type of a file
 		about: Decision is based on the file extension. Which is not a safe method and the list
 		of content types and extensions is far from complete. If no matching content type is being
@@ -191,6 +205,14 @@ Type TRackspaceCloudFileObject
 		Return Self._lastModified
 	End Method
 	
+	Rem
+		bbdoc: Return meta data
+		about: Returns the meta data. Don't directly edit this data structure! Use @SetMetaData() instead!
+	End Rem
+	Method MetaData:TMap()
+		Return Self._metaData
+	End Method
+	
 '	Rem
 '		bbdoc: Private method
 '	End Rem
@@ -199,5 +221,13 @@ Type TRackspaceCloudFileObject
 		Self._size = response.GetHeader("Content-Length").ToLong()
 		Self._contentType = response.GetHeader("Content-Type")
 		Self._lastModified = response.GetHeader("Last-Modified")
+		
+		For Local key:String = EachIn response.headers.Keys()
+			If key.Contains("X-Object-Meta-")
+				Local strippedKey:String = key[14..].Trim()
+				Local content:String = TURLFunc.DecodeString(String(response.GetHeader(key)))
+				Self.SetMetaData(strippedKey, content)
+			End If
+		Next
 	End Method
 End Type
