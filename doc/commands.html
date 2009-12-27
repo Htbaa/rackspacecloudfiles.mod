@@ -69,6 +69,9 @@ Return message.
 <tr><td class=docleft width=1%>Description</td><td class=docright>This type represents an object in Cloud Files.</td></tr>
 </table>
 <table class=doc width=90% align=center><tr ><th class=doctop colspan=2 align=left><a name=TRackspaceCloudFileObject_methods></a>Methods Summary</th></tr>
+<tr><td class=docleft width=1%><a href=#ClearMetaData>ClearMetaData</a></td><td class=docright>
+Clear meta data.
+</td></tr>
 <tr><td class=docleft width=1%><a href=#ContentType>ContentType</a></td><td class=docright>
 Return the content type of an object.
 </td></tr>
@@ -87,6 +90,9 @@ Fetches the metadata of the object.
 <tr><td class=docleft width=1%><a href=#LastModified>LastModified</a></td><td class=docright>
 Return the last modified time of an object.
 </td></tr>
+<tr><td class=docleft width=1%><a href=#MetaData>MetaData</a></td><td class=docright>
+Return meta data.
+</td></tr>
 <tr><td class=docleft width=1%><a href=#Name>Name</a></td><td class=docright>
 Returns the name of the object.
 </td></tr>
@@ -96,6 +102,12 @@ Creates a new object with the contents of a local file.
 <tr><td class=docleft width=1%><a href=#Remove>Remove</a></td><td class=docright>
 Deletes an object.
 </td></tr>
+<tr><td class=docleft width=1%><a href=#SaveMetaData>SaveMetaData</a></td><td class=docright>
+Save changes to meta data.
+</td></tr>
+<tr><td class=docleft width=1%><a href=#SetMetaData>SetMetaData</a></td><td class=docright>
+Set meta data for an object.
+</td></tr>
 <tr><td class=docleft width=1%><a href=#Size>Size</a></td><td class=docright>
 Return the size of an object in bytes.
 </td></tr>
@@ -104,6 +116,11 @@ Return the size of an object in bytes.
 <tr><td class=docleft width=1%><a href=#ContentTypeOf>ContentTypeOf</a></td><td class=docright>
 Return content-type of a file.
 </td></tr>
+</table>
+<table class=doc width=100% cellspacing=3 id=ClearMetaData>
+<tr><td class=doctop colspan=2>Method ClearMetaData()</td></tr>
+<tr><td class=docleft width=1%>Description</td><td class=docright>Clear meta data.</td></tr>
+<tr><td class=docleft width=1%>Information</td><td class=docright>To remove all meta data call this method before saving.</td></tr>
 </table>
 <table class=doc width=100% cellspacing=3 id=ContentType>
 <tr><td class=doctop colspan=2>Method ContentType:String()</td></tr>
@@ -130,6 +147,11 @@ Return content-type of a file.
 <tr><td class=doctop colspan=2>Method LastModified:String()</td></tr>
 <tr><td class=docleft width=1%>Description</td><td class=docright>Return the last modified time of an object.</td></tr>
 </table>
+<table class=doc width=100% cellspacing=3 id=MetaData>
+<tr><td class=doctop colspan=2>Method MetaData:TMap()</td></tr>
+<tr><td class=docleft width=1%>Description</td><td class=docright>Return meta data.</td></tr>
+<tr><td class=docleft width=1%>Information</td><td class=docright>Returns the meta data. Don't directly edit this data structure! Use <b>SetMetaData</b>() instead!</td></tr>
+</table>
 <table class=doc width=100% cellspacing=3 id=Name>
 <tr><td class=doctop colspan=2>Method Name:String()</td></tr>
 <tr><td class=docleft width=1%>Description</td><td class=docright>Returns the name of the object.</td></tr>
@@ -142,6 +164,16 @@ Return content-type of a file.
 <table class=doc width=100% cellspacing=3 id=Remove>
 <tr><td class=doctop colspan=2>Method Remove()</td></tr>
 <tr><td class=docleft width=1%>Description</td><td class=docright>Deletes an object.</td></tr>
+</table>
+<table class=doc width=100% cellspacing=3 id=SaveMetaData>
+<tr><td class=doctop colspan=2>Method SaveMetaData()</td></tr>
+<tr><td class=docleft width=1%>Description</td><td class=docright>Save changes to meta data.</td></tr>
+<tr><td class=docleft width=1%>Information</td><td class=docright>Save changes to meta data done with <b>SetMetaData</b>() without having to re-upload the file contents.</td></tr>
+</table>
+<table class=doc width=100% cellspacing=3 id=SetMetaData>
+<tr><td class=doctop colspan=2>Method SetMetaData(key:String, value:String)</td></tr>
+<tr><td class=docleft width=1%>Description</td><td class=docright>Set meta data for an object.</td></tr>
+<tr><td class=docleft width=1%>Information</td><td class=docright>Remember that the key and value together shouldn't exceed 4096 bytes.</td></tr>
 </table>
 <table class=doc width=100% cellspacing=3 id=Size>
 <tr><td class=doctop colspan=2>Method Size:Long()</td></tr>
@@ -296,7 +328,7 @@ Deletes the container, which should be empty.
 <h2 id=modinfo>Module Information</h2>
 <table width=100%>
 <tr><th width=1%>Name</th><td>htbaapub.rackspacecloudfiles</td></tr>
-<tr><th width=1%>Version</th><td>1.05</td></tr>
+<tr><th width=1%>Version</th><td>1.06</td></tr>
 <tr><th width=1%>Author</th><td>Christiaan Kras</td></tr>
 <tr><th width=1%>Git repository</th><td><a href='http://github.com/Htbaa/rackspacecloudfiles.mod/'>http://github.com/Htbaa/rackspacecloudfiles.mod/</a></td></tr>
 <tr><th width=1%>Rackspace Cloud Files</th><td><a href='http://www.rackspacecloud.com'>http://www.rackspacecloud.com</a></td></tr>
