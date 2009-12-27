@@ -38,6 +38,8 @@ Next
 
 'To create a new object with the contents of a local file
 Local obj1:TRackspaceCloudFileObject = container.FileObject("Test1.txt")
+'Set some meta data
+obj1.SetMetaData("date", CurrentDate())
 obj1.PutFile("credentials.default.txt")
 
 Print obj1.ETag()
