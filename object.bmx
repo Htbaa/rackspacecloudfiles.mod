@@ -152,6 +152,14 @@ Type TRackspaceCloudFileObject
 	End Method
 	
 	Rem
+		bbdoc: Clear meta data
+		about: To remove all meta data call this method before saving
+	End Rem
+	Method ClearMetaData()
+		If Self._metaData Then Self._metaData.Clear()
+	End Method
+	
+	Rem
 		bbdoc: Set meta data for an object
 		about: Remember that the key and value together shouldn't exceed 4096 bytes
 	End Rem
