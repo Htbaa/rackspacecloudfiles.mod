@@ -118,12 +118,7 @@ Type TRackspaceCloudFileObject
 		headerList.AddLast("ETag: " + md5Hex.ToLower())
 		headerList.AddLast("Content-Type: " + TRackspaceCloudFileObject.ContentTypeOf(filename))
 
-		If Self._metaData
-			For Local key:String = EachIn Self._metaData.Keys()
-				Local content:String = TURLFunc.EncodeString(String(Self._metaData.ValueForKey(key)))
-				headerList.AddLast("X-Object-Meta-" + key + ": " + content)
-			Next
-		End If
+		Self._PrepareMetaDataForTransfer(headerList)
 		
 		Local headerArray:String[] = New String[headerList.Count()]
 		For Local i:Int = 0 To headerArray.Length - 1
@@ -144,6 +139,18 @@ Type TRackspaceCloudFileObject
 		End Select
 	End Method
 
+'	Rem
+'		bbdoc: Private method
+'	End Rem
+	Method _PrepareMetaDataForTransfer(headerList:TList)
+		If Self._metaData
+			For Local key:String = EachIn Self._metaData.Keys()
+				Local content:String = TURLFunc.EncodeString(String(Self._metaData.ValueForKey(key)))
+				headerList.AddLast("X-Object-Meta-" + key + ": " + content)
+			Next
+		End If
+	End Method
+	
 	Rem
 		bbdoc: Set meta data for an object
 		about: Remember that the key and value together shouldn't exceed 4096 bytes
