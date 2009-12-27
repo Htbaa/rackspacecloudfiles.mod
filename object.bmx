@@ -164,6 +164,30 @@ Type TRackspaceCloudFileObject
 	End Method
 	
 	Rem
+		bbdoc: Save changes to meta data
+		about: Save changes to meta data done with @SetMetaData() without having to re-upload the file contents
+	End Rem
+	Method SaveMetaData()
+		Local headerList:TList = New TList
+		Self._PrepareMetaDataForTransfer(headerList)
+		
+		Local headerArray:String[] = New String[headerList.Count()]
+		For Local i:Int = 0 To headerArray.Length - 1
+			headerArray[i] = String(headerList.ValueAtIndex(i))
+		Next
+
+		Local response:TRESTResponse = Self._rackspace._Transport(Self._url, headerArray, "POST")
+		Select response.responseCode
+			Case 202
+				'ok
+			Case 404
+				Throw New TRackspaceCloudFileObjectException.SetMessage("Object doesn't exist")
+			Default
+				Throw New TRackspaceCloudFileObjectException.SetMessage("Unable to handle response")
+		End Select
+	End Method
+	
+	Rem
 		bbdoc: Return content-type of a file
 		about: Decision is based on the file extension. Which is not a safe method and the list
 		of content types and extensions is far from complete. If no matching content type is being
