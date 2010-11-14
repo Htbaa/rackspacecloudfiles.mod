@@ -27,7 +27,7 @@ Rem
 EndRem
 Module htbaapub.rackspacecloudfiles
 ModuleInfo "Name: htbaapub.rackspacecloudfiles"
-ModuleInfo "Version: 1.07"
+ModuleInfo "Version: 1.08"
 ModuleInfo "License: MIT"
 ModuleInfo "Author: Christiaan Kras"
 ModuleInfo "Git repository: <a href='http://github.com/Htbaa/rackspacecloudfiles.mod/'>http://github.com/Htbaa/rackspacecloudfiles.mod/</a>"
@@ -93,17 +93,16 @@ Type TRackspaceCloudFiles
 		
 		Local response:TRESTResponse = Self._Transport("https://api.mosso.com/auth", headers)
 		
-		Select response.responseCode
-			Case 204
-				Self._storageToken = response.GetHeader("X-Storage-Token")
-				Self._storageUrl = response.GetHeader("X-Storage-Url")
-				Self._cdnManagementUrl = response.GetHeader("X-CDN-Management-Url")
-				Self._authToken = response.GetHeader("X-Auth-Token")
-			Case 401
-				Throw New TRackspaceCloudFilesException.SetMessage("Invalid account or access key!")
-			Default
-				Throw New TRackspaceCloudFilesException.SetMessage("Unable to handle response!")
-		End Select
+		If response.IsSuccess()
+			Self._storageToken = response.GetHeader("X-Storage-Token")
+			Self._storageUrl = response.GetHeader("X-Storage-Url")
+			Self._cdnManagementUrl = response.GetHeader("X-CDN-Management-Url")
+			Self._authToken = response.GetHeader("X-Auth-Token")
+		ElseIf response.IsClientError()
+			Throw New TRackspaceCloudFilesException.SetMessage("Invalid account or access key!")
+		Else
+			Throw New TRackspaceCloudFilesException.SetMessage("Unable to handle response!")
+		End If
 	End Method
 	
 	Rem
@@ -149,14 +148,10 @@ Type TRackspaceCloudFiles
 	End Rem
 	Method CreateContainer:TRackspaceCloudFilesContainer(name:String)
 		Local response:TRESTResponse = Self._Transport(Self._storageUrl + "/" + name, Null, "PUT")
-		Select response.responseCode
-			Case 201 'Created
-				Return Self.Container(name)
-			Case 202 'Already exists
-				Return Self.Container(name)
-			Default
-				Throw New TRackspaceCloudFilesException.SetMessage("Unable to handle response!")
-		End Select
+		If response.IsSuccess()
+			Return Self.Container(name)
+		End If
+		Throw New TRackspaceCloudFilesException.SetMessage("Unable to handle response!")
 	End Method
 	
 	Rem
@@ -173,13 +168,10 @@ Type TRackspaceCloudFiles
 	End Rem
 	Method TotalBytesUsed:Long()
 		Local response:TRESTResponse = Self._Transport(Self._storageUrl, Null, "HEAD")
-		Select response.responseCode
-			Case 204
-				Return response.GetHeader("X-Account-Bytes-Used").ToLong()
-			Default
-				Throw New TRackspaceCloudFilesException.SetMessage("Unable to handle response!")
-		End Select
-		Return 0
+		If response.IsSuccess()
+			Return response.GetHeader("X-Account-Bytes-Used").ToLong()
+		End If
+		Throw New TRackspaceCloudFilesException.SetMessage("Unable to handle response!")
 	End Method
 	
 	Rem

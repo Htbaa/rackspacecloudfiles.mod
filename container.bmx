@@ -54,13 +54,10 @@ Type TRackspaceCloudFilesContainer
 	End Rem
 	Method ObjectCount:Int()
 		Local response:TRESTResponse = Self._rackspace._Transport(Self._url, Null, "HEAD")
-		Select response.responseCode
-			Case 204
-				Return response.GetHeader("X-Container-Object-Count").ToInt()
-			Default
-				Throw New TRackspaceCloudFilesContainerException.SetMessage("Unable to handle response")
-		End Select
-		Return 0
+		If response.IsSuccess()
+			Return response.GetHeader("X-Container-Object-Count").ToInt()
+		End If
+		Throw New TRackspaceCloudFilesContainerException.SetMessage("Unable to handle response")
 	End Method
 	
 	Rem
@@ -69,13 +66,10 @@ Type TRackspaceCloudFilesContainer
 	End Rem
 	Method BytesUsed:Long()
 		Local response:TRESTResponse = Self._rackspace._Transport(Self._url, Null, "HEAD")
-		Select response.responseCode
-			Case 204
-				Return response.GetHeader("X-Container-Bytes-Used").ToInt()
-			Default
-				Throw New TRackspaceCloudFilesContainerException.SetMessage("Unable to handle response")
-		End Select
-		Return 0
+		If response.IsSuccess()
+			Return response.GetHeader("X-Container-Bytes-Used").ToLong()
+		End If
+		Throw New TRackspaceCloudFilesContainerException.SetMessage("Unable to handle response")
 	End Method
 	
 	Rem

@@ -72,14 +72,13 @@ Type TRackspaceCloudFileObject
 	End Rem
 	Method Head()
 		Local response:TRESTResponse = Self._rackspace._Transport(Self._url, Null, "HEAD")
-		Select response.responseCode
-			Case 404
-				Throw New TRackspaceCloudFileObjectException.SetMessage("Object " + Self._name + " not found")
-			Case 204
-				Self._SetAttributesFromResponse(response)
-			Default
-				Throw New TRackspaceCloudFileObjectException.SetMessage("Unable to handle response")
-		End Select
+		If response.IsSuccess()
+			Self._SetAttributesFromResponse(response)
+		Else If response.IsClientError()
+			Throw New TRackspaceCloudFileObjectException.SetMessage("Object " + Self._name + " not found")
+		Else
+			Throw New TRackspaceCloudFileObjectException.SetMessage("Unable to handle response")
+		End If
 	End Method
 
 	Rem
@@ -88,18 +87,17 @@ Type TRackspaceCloudFileObject
 	End Rem
 	Method Get:String()
 		Local response:TRESTResponse = Self._rackspace._Transport(Self._url, Null)
-		Select response.responseCode
-			Case 404
-				Throw New TRackspaceCloudFileObjectException.SetMessage("Object " + Self._name + " not found")
-			Case 200
-				Self._SetAttributesFromResponse(response)
-				If Self._etag <> MD5(response.content).ToLower()
-					Throw New TRackspaceCloudFileObjectException.SetMessage("Data corruption error")
-				End If
-				Return response.content
-			Default
-				Throw New TRackspaceCloudFileObjectException.SetMessage("Unable to handle response")
-		End Select
+		If response.IsSuccess()
+			Self._SetAttributesFromResponse(response)
+			If Self._etag <> MD5(response.content).ToLower()
+				Throw New TRackspaceCloudFileObjectException.SetMessage("Data corruption error")
+			End If
+			Return response.content
+		Else If response.IsClientError()
+			Throw New TRackspaceCloudFileObjectException.SetMessage("Object " + Self._name + " not found")
+		Else
+			Throw New TRackspaceCloudFileObjectException.SetMessage("Unable to handle response")
+		End If
 	End Method
 
 	Rem
