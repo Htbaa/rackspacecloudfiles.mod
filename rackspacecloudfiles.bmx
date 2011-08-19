@@ -32,6 +32,8 @@ ModuleInfo "License: MIT"
 ModuleInfo "Author: Christiaan Kras"
 ModuleInfo "Git repository: <a href='http://github.com/Htbaa/rackspacecloudfiles.mod/'>http://github.com/Htbaa/rackspacecloudfiles.mod/</a>"
 ModuleInfo "Rackspace Cloud Files: <a href='http://www.rackspacecloud.com'>http://www.rackspacecloud.com</a>"
+ModuleInfo "History: 1.09"
+ModuleInfo "History: TRackspaceCloudFiles.Create now accepts a third parameter 'location'. This allows authentication to either the USA or UK server."
 
 Import bah.crypto
 Import htbaapub.rest
@@ -61,9 +63,20 @@ Type TRackspaceCloudFiles
 	Field _cdnManagementUrl:String
 	Field _authToken:String
 '	Field _authTokenExpires:Int
+	Field _location:String
 	
 	Field _progressCallback:Int(data:Object, dltotal:Double, dlnow:Double, ultotal:Double, ulnow:Double)
 	Field _progressData:Object
+	
+	Rem
+		bbdoc: URL for data stored in the USA
+	End Rem	
+	Const LOCATION_USA:String = "https://auth.api.rackspacecloud.com/v1.0"
+	
+	Rem
+		bbdoc: Url for data stored in the UK
+	End Rem
+	Const LOCATION_UK:String = "https://lon.auth.api.rackspacecloud.com/v1.0"
 
 	Rem
 		bbdoc: Optionally set the path to a certification bundle to validate the SSL certificate of Rackspace
@@ -75,10 +88,12 @@ Type TRackspaceCloudFiles
 	Rem
 		bbdoc: Creates a TRackspaceCloudFiles object
 		about: This method calls Authenticate()
+		location can be either the LOCATION_USA or LOCATION_UK constant
 	End Rem
-	Method Create:TRackspaceCloudFiles(user:String, key:String)
+	Method Create:TRackspaceCloudFiles(user:String, key:String, location:String = LOCATION_USA)
 		Self._authUser = user
 		Self._authKey = key
+		Self._location = location
 		Self.Authenticate()
 		Return Self
 	End Method
@@ -91,7 +106,7 @@ Type TRackspaceCloudFiles
 		headers[0] = "X-Auth-User: " + Self._authUser
 		headers[1] = "X-Auth-Key: " + Self._authKey
 		
-		Local response:TRESTResponse = Self._Transport("https://api.mosso.com/auth", headers)
+		Local response:TRESTResponse = Self._Transport(Self._location, headers)
 		
 		If response.IsSuccess()
 			Self._storageToken = response.GetHeader("X-Storage-Token")
