@@ -33,6 +33,7 @@ ModuleInfo "Author: Christiaan Kras"
 ModuleInfo "Git repository: <a href='http://github.com/Htbaa/rackspacecloudfiles.mod/'>http://github.com/Htbaa/rackspacecloudfiles.mod/</a>"
 ModuleInfo "Rackspace Cloud Files: <a href='http://www.rackspacecloud.com'>http://www.rackspacecloud.com</a>"
 ModuleInfo "History: 1.09"
+ModuleInfo "History: Added check to prevent expiration of authToken. This allows applications to run for over 24-hours with the same TRackspaceCloudFiles object."
 ModuleInfo "History: TRackspaceCloudFiles.Create now accepts a third parameter 'location'. This allows authentication to either the USA or UK server."
 
 Import bah.crypto
@@ -62,7 +63,6 @@ Type TRackspaceCloudFiles
 	Field _storageUrl:String
 	Field _cdnManagementUrl:String
 	Field _authToken:String
-'	Field _authTokenExpires:Int
 	Field _location:String
 	
 	Field _progressCallback:Int(data:Object, dltotal:Double, dlnow:Double, ultotal:Double, ulnow:Double)
@@ -223,6 +223,13 @@ Type TRackspaceCloudFiles
 		Local request:TRESTRequest = New TRESTRequest
 		request.SetProgressCallback(Self._progressCallback, Self._progressData)
 		Local response:TRESTResponse = request.Call(url, headerArray, requestMethod, userData)
+		
+		'Prevent expiration of authToken
+		If response.responseCode = 401 And Self._authToken
+			Self.Authenticate()
+			Return Self._Transport(url, headers, requestMethod, userData)
+		End If
+		
 		Return response
 	End Method
 
